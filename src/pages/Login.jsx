@@ -43,6 +43,7 @@ function Login() {
 
   return (
     <div className="fade-in" style={styles.container}>
+      <div style={styles.overlay} />
       <div style={styles.card}>
         <div style={styles.logoSection}>
           <img src="/logo.png" alt="OTMSR Logo" style={styles.logoImage} />
@@ -99,8 +100,17 @@ const styles = {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    background: '#F5F5F5',
+    backgroundImage: 'url("/bg.png")',
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+    position: 'relative',
     padding: '20px',
+  },
+  overlay: {
+    position: 'absolute',
+    top: 0, left: 0, right: 0, bottom: 0,
+    background: 'rgba(139, 0, 0, 0.75)',
+    backdropFilter: 'blur(6px)',
   },
   card: {
     background: '#FFFFFF',
@@ -109,6 +119,8 @@ const styles = {
     width: '100%',
     maxWidth: '420px',
     overflow: 'hidden',
+    position: 'relative',
+    zIndex: 1,
   },
   logoSection: {
     background: '#FFFFFF',
