@@ -7,6 +7,7 @@ function Login() {
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [focused, setFocused] = useState(null)
   const navigate = useNavigate()
 
   const handleLogin = async (e) => {
@@ -42,166 +43,266 @@ function Login() {
   }
 
   return (
-    <div className="fade-in" style={styles.container}>
-      <div style={styles.overlay} />
-      <div style={styles.card}>
-        <div style={styles.logoSection}>
-          <img src="/logo.png" alt="OTMSR Logo" style={styles.logoImage} />
-          <h1 style={styles.companyName}>One Top Medical</h1>
-          <p style={styles.companySub}>Systems Resources</p>
+    <div className="login-wrapper" style={styles.wrapper}>
+      <div className="animate-image login-image-panel" style={styles.imagePanel}>
+        <div style={styles.imageOverlay} />
+        <div style={styles.imageContent}>
+          <div className="logo-pulse">
+            <img src="/logo2.png" alt="OTMSR" className="login-image-logo" style={styles.imageLogo} />
+          </div>
+          <h2 className="login-image-title" style={styles.imageTitle}>One Top Medical</h2>
+          <p className="login-image-sub" style={styles.imageSub}>Systems Resources</p>
+          <div style={styles.divider} />
+          <p style={styles.imageTagline}>Biomedical Equipment Service Management</p>
+        </div>
+      </div>
+
+      <div className="login-form-panel" style={styles.formPanel}>
+        <div style={{
+          position: 'absolute',
+          top: 0, left: 0, right: 0, bottom: 0,
+          pointerEvents: 'none',
+          overflow: 'hidden',
+          zIndex: 0,
+        }}>
+          {[...Array(20)].map((_, i) => (
+            <div key={i} style={{
+              position: 'absolute',
+              width: Math.random() * 6 + 4 + 'px',
+              height: Math.random() * 6 + 4 + 'px',
+              background: 'rgba(204,0,0,' + (Math.random() * 0.4 + 0.25) + ')',
+              borderRadius: '50%',
+              left: Math.random() * 100 + '%',
+              bottom: '-20px',
+              boxShadow: '0 0 8px rgba(204,0,0,0.3)',
+              animation: `floatUp ${Math.random() * 7 + 5}s linear infinite`,
+              animationDelay: Math.random() * 5 + 's',
+            }} />
+          ))}
         </div>
 
-        <form onSubmit={handleLogin} style={styles.form}>
-          <h2 style={styles.title}>Sign In</h2>
+        <div className="animate-card login-form-area" style={styles.formArea}>
+          <h1 className="animate-title" style={styles.title}>Sign In</h1>
+          <p className="animate-title" style={styles.subtitle}>Access your account</p>
 
-          {error && <p style={styles.error}>{error}</p>}
+          {error && <p className="animate-form" style={styles.error}>{error}</p>}
 
-          <div style={styles.inputGroup}>
-            <label style={styles.label}>Email</label>
+          <form onSubmit={handleLogin}>
             <input
               type="email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              style={styles.input}
-              placeholder="engineer@otmsr.com"
+              onChange={e => setEmail(e.target.value)}
+              onFocus={() => setFocused('email')}
+              onBlur={() => setFocused(null)}
+              style={{
+                ...styles.input,
+                borderColor: focused === 'email' ? '#CC0000' : '#EEE',
+                boxShadow: focused === 'email' ? '0 0 0 3px rgba(204,0,0,0.1)' : 'none',
+                transform: focused === 'email' ? 'scale(1.02)' : 'scale(1)',
+                transition: 'all 0.3s ease',
+              }}
+              placeholder="Email"
               required
             />
-          </div>
-
-          <div style={styles.inputGroup}>
-            <label style={styles.label}>Password</label>
             <input
               type="password"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              style={styles.input}
-              placeholder="••••••••"
+              onChange={e => setPassword(e.target.value)}
+              onFocus={() => setFocused('password')}
+              onBlur={() => setFocused(null)}
+              style={{
+                ...styles.input,
+                borderColor: focused === 'password' ? '#CC0000' : '#EEE',
+                boxShadow: focused === 'password' ? '0 0 0 3px rgba(204,0,0,0.1)' : 'none',
+                transform: focused === 'password' ? 'scale(1.02)' : 'scale(1)',
+                transition: 'all 0.3s ease',
+              }}
+              placeholder="Password"
               required
             />
-          </div>
+            <button
+              type="submit"
+              style={styles.button}
+              disabled={loading}
+              onMouseEnter={e => { e.target.style.transform = 'translateY(-2px)'; e.target.style.boxShadow = '0 8px 25px rgba(204,0,0,0.3)' }}
+              onMouseLeave={e => { e.target.style.transform = 'translateY(0)'; e.target.style.boxShadow = 'none' }}
+            >
+              {loading ? 'Signing in...' : 'Sign In'}
+            </button>
+          </form>
 
-          <button type="submit" style={styles.button} disabled={loading}>
-            {loading ? 'Signing in...' : 'Sign In'}
-          </button>
-
-          <p style={styles.demoText}>
-            Demo: engineer@otmsr.com / demo1234<br />
-            Admin: admin@otmsr.com / demo1234
-          </p>
-        </form>
+          <p className="animate-form" style={styles.demo}>admin@otmsr.com / demo1234 &nbsp;|&nbsp; engineer@otmsr.com / demo1234</p>
+        </div>
       </div>
+
+      <style>{`
+        @keyframes slideUp {
+          from { opacity: 0; transform: translateY(30px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+        @keyframes slideInLeft {
+          from { opacity: 0; transform: translateX(-40px); }
+          to { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes floatUp {
+          0% { transform: translateY(0) scale(1); opacity: 1; }
+          100% { transform: translateY(-110vh) scale(0.3); opacity: 0; }
+        }
+        @keyframes logoGlow {
+          0%, 100% { filter: drop-shadow(0 0 8px rgba(255,255,255,0.2)); transform: scale(1); }
+          50% { filter: drop-shadow(0 0 20px rgba(255,255,255,0.5)); transform: scale(1.05); }
+        }
+        .animate-image { animation: slideInLeft 1s ease-out; }
+        .animate-card { animation: slideUp 0.7s ease-out 0.3s both; }
+        .animate-title { animation: fadeIn 0.8s ease-out 0.5s both; }
+        .animate-form { animation: slideUp 0.6s ease-out 0.8s both; }
+        .logo-pulse { animation: logoGlow 3s ease-in-out infinite; display: inline-block; }
+        @media (max-width: 768px) {
+          .login-wrapper { flex-direction: column !important; }
+          .login-image-panel { flex: none !important; height: 40vh !important; min-height: 280px !important; }
+          .login-form-panel { flex: 1 !important; padding: 40px 24px !important; }
+          .login-image-logo { width: 60px !important; height: 60px !important; }
+          .login-image-title { font-size: 24px !important; }
+          .login-image-sub { font-size: 12px !important; }
+          .login-form-area { max-width: 100% !important; }
+        }
+      `}</style>
     </div>
   )
 }
 
 const styles = {
-  container: {
-    minHeight: '100vh',
+  wrapper: {
     display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
+    minHeight: '100vh',
+    background: '#F5F5F5',
+    position: 'relative',
+    overflow: 'hidden',
+  },
+  imagePanel: {
+    flex: '7',
     backgroundImage: 'url("/bg.png")',
     backgroundSize: 'cover',
     backgroundPosition: 'center',
     position: 'relative',
-    padding: '20px',
-  },
-  overlay: {
-    position: 'absolute',
-    top: 0, left: 0, right: 0, bottom: 0,
-    background: 'rgba(139, 0, 0, 0.75)',
-    backdropFilter: 'blur(6px)',
-  },
-  card: {
-    background: '#FFFFFF',
-    borderRadius: '16px',
-    boxShadow: '0 20px 60px rgba(0,0,0,0.3)',
-    width: '100%',
-    maxWidth: '420px',
-    overflow: 'hidden',
-    position: 'relative',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
     zIndex: 1,
   },
-  logoSection: {
-    background: '#FFFFFF',
-    padding: '40px 20px 30px',
+  imageOverlay: {
+    position: 'absolute',
+    top: 0, left: 0, right: 0, bottom: 0,
+    background: 'linear-gradient(135deg, rgba(139,0,0,0.75) 0%, rgba(0,0,0,0.4) 100%)',
+  },
+  imageContent: {
+    position: 'relative',
+    zIndex: 1,
     textAlign: 'center',
-    color: '#CC0000',
-    borderBottom: '3px solid #CC0000',
+    color: '#FFFFFF',
+    padding: '40px',
   },
-  logoImage: {
-    width: '80px',
-    height: '80px',
+  imageLogo: {
+    width: '90px',
+    height: '90px',
     objectFit: 'contain',
-    marginBottom: '12px',
+    marginBottom: '20px',
   },
-  companyName: {
-    fontSize: '24px',
+  imageTitle: {
+    fontSize: '34px',
     fontWeight: '700',
-    letterSpacing: '0.5px',
-    color: '#8B0000',
+    letterSpacing: '1px',
+    marginBottom: '2px',
   },
-  companySub: {
-    fontSize: '14px',
-    color: '#CC0000',
+  imageSub: {
+    fontSize: '15px',
+    opacity: 0.85,
+    letterSpacing: '3px',
+    textTransform: 'uppercase',
     marginTop: '4px',
     fontWeight: '500',
   },
-  form: {
-    padding: '30px',
+  divider: {
+    width: '50px',
+    height: '2px',
+    background: 'rgba(255,255,255,0.4)',
+    margin: '24px auto',
+  },
+  imageTagline: {
+    fontSize: '13px',
+    opacity: 0.6,
+    fontStyle: 'italic',
+  },
+  formPanel: {
+    flex: '3',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: '40px',
+    zIndex: 1,
+    background: '#FFFFFF',
+    position: 'relative',
+    overflow: 'hidden',
+  },
+  formArea: {
+    width: '100%',
+    maxWidth: '360px',
+    position: 'relative',
+    zIndex: 2,
   },
   title: {
-    fontSize: '22px',
-    fontWeight: '600',
-    color: '#333333',
-    marginBottom: '24px',
-    textAlign: 'center',
+    fontSize: '26px',
+    fontWeight: '700',
+    color: '#1A1A1A',
+    marginBottom: '2px',
+  },
+  subtitle: {
+    fontSize: '13px',
+    color: '#999',
+    marginBottom: '28px',
   },
   error: {
-    background: '#FFF0F0',
+    background: '#FFF5F5',
     color: '#CC0000',
-    padding: '10px',
+    padding: '10px 14px',
     borderRadius: '8px',
-    fontSize: '14px',
-    marginBottom: '16px',
-    textAlign: 'center',
-  },
-  inputGroup: {
+    fontSize: '13px',
     marginBottom: '18px',
-  },
-  label: {
-    display: 'block',
-    fontSize: '14px',
-    fontWeight: '500',
-    color: '#333333',
-    marginBottom: '6px',
+    border: '1px solid #FFE0E0',
   },
   input: {
     width: '100%',
-    padding: '12px 14px',
-    border: '2px solid #E0E0E0',
-    borderRadius: '8px',
-    fontSize: '15px',
+    padding: '14px 16px',
+    border: '2px solid #EEE',
+    borderRadius: '10px',
+    fontSize: '14px',
     outline: 'none',
+    marginBottom: '12px',
+    background: '#FAFAFA',
   },
   button: {
     width: '100%',
-    padding: '13px',
+    padding: '14px',
     background: '#CC0000',
     color: '#FFFFFF',
     border: 'none',
-    borderRadius: '8px',
-    fontSize: '16px',
+    borderRadius: '10px',
+    fontSize: '15px',
     fontWeight: '600',
     cursor: 'pointer',
-    marginTop: '8px',
+    marginTop: '6px',
+    letterSpacing: '0.5px',
+    transition: 'transform 0.2s, box-shadow 0.2s',
   },
-  demoText: {
+  demo: {
+    fontSize: '11px',
+    color: '#CCC',
+    marginTop: '20px',
     textAlign: 'center',
-    fontSize: '12px',
-    color: '#999',
-    marginTop: '16px',
-    lineHeight: '1.6',
   },
 }
 
